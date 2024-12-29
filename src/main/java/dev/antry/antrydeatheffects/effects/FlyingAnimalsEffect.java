@@ -10,9 +10,13 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 import org.bukkit.configuration.ConfigurationSection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Random;
 
 public class FlyingAnimalsEffect extends DeathEffect {
     private final AntryDeathEffects plugin;
+    private final Random random = new Random();
 
     public FlyingAnimalsEffect(AntryDeathEffects plugin) {
         super("Flying Animals", Material.MONSTER_EGG, "antrydeatheffects.effect.flyinganimals");
@@ -34,13 +38,29 @@ public class FlyingAnimalsEffect extends DeathEffect {
             FireworkMeta fwm = fw.getFireworkMeta();
             
             // Random firework effect
+            List<String> colorStrings = config.getStringList("firework.colors");
+            List<Color> colors = colorStrings.stream()
+                .map(s -> {
+                    String[] rgb = s.split(",");
+                    return Color.fromRGB(
+                        Integer.parseInt(rgb[0]),
+                        Integer.parseInt(rgb[1]),
+                        Integer.parseInt(rgb[2])
+                    );
+                })
+                .collect(Collectors.toList());
+            
+            Color randomColor = colors.get(random.nextInt(colors.size()));
+            
+            List<String> types = config.getStringList("firework.types");
+            String typeString = types.get(random.nextInt(types.size()));
+            org.bukkit.FireworkEffect.Type type = org.bukkit.FireworkEffect.Type.valueOf(typeString);
+            
             org.bukkit.FireworkEffect effect = org.bukkit.FireworkEffect.builder()
-                .withColor(Color.fromRGB(
-                    (int) (Math.random() * 255),
-                    (int) (Math.random() * 255),
-                    (int) (Math.random() * 255)))
-                .with(org.bukkit.FireworkEffect.Type.BALL_LARGE)
-                .withTrail()
+                .withColor(randomColor)
+                .with(type)
+                .trail(config.getBoolean("firework.trail", true))
+                .flicker(config.getBoolean("firework.flicker", true))
                 .build();
             
             fwm.addEffect(effect);

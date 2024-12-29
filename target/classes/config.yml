@@ -6,11 +6,25 @@ prefix: "&f&l[&3&lAntryPlugins&7&l] "
 # Default effects settings
 effects:
   flying-animals:
-    duration: 40 # Duration in ticks (2 seconds)
-    animal-type: SHEEP # Type of animal to spawn
+    duration: 40                # Duration in ticks (2 seconds)
+    animal-type: SHEEP         # Type of animal to spawn (SHEEP, COW, PIG, etc.)
+    animal-health: 2048.0      # Health of spawned animals
+    circle-points: 8           # Number of points in the circle (45° intervals)
     firework:
       enabled: true
       power: 2
+      colors:                  # List of possible colors (RGB format)
+        - "255,0,0"           # Red
+        - "0,255,0"           # Green
+        - "0,0,255"           # Blue
+      types:                  # List of possible firework types
+        - BALL_LARGE
+        - BALL
+        - STAR
+        - BURST
+        - CREEPER
+      trail: true
+      flicker: true
     velocity:
       vertical: 0.6
       horizontal: 0.6
@@ -86,22 +100,43 @@ effects:
         pitch: 1.0
 
   firework:
-    amount: 1          # Number of fireworks to spawn
-    power: 2           # How high the firework goes (0-4)
-    trail: true        # Whether firework has trail
-    flicker: true      # Whether firework has flicker effect
+    amount: 1                 # Number of fireworks to spawn
+    power: 2                  # How high the firework goes (0-4)
+    trail: true              # Whether firework has trail
+    flicker: true           # Whether firework has flicker effect
+    colors:                 # List of possible colors (RGB format)
+      - "255,0,0"          # Red
+      - "0,255,0"          # Green
+      - "0,0,255"          # Blue
+    fade-colors:           # Colors to fade to
+      - "128,0,0"         # Dark Red
+      - "0,128,0"         # Dark Green
+      - "0,0,128"         # Dark Blue
+    types:                # List of possible firework types
+      - BALL_LARGE
+      - BALL
+      - STAR
+      - BURST
+      - CREEPER
 
   launch:
-    velocity: 3.0      # How high the player is launched
-    duration: 60       # How long effects last (in ticks)
+    velocity: 3.0         # How high the player is launched
+    duration: 60         # How long effects last (in ticks)
     particles:
       enabled: true
-      type: CLOUD      # Particle effect type
+      type: CLOUD       # Particle effect type
+      interval: 1       # Ticks between particle spawns
+      count: 1         # Number of particles to spawn
+      offset:          # Particle spawn offset
+        x: 0.3
+        y: 0.0
+        z: 0.3
     sound:
       enabled: true
       type: ENDERDRAGON_WINGS
       volume: 1.0
       pitch: 1.0
+      interval: 5      # Ticks between sound plays
 
 # Messages
 messages:

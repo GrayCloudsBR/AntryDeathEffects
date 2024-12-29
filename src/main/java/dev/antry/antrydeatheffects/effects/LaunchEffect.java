@@ -47,8 +47,16 @@ public class LaunchEffect extends DeathEffect {
                 }
                 
                 if (particles) {
-                    victim.getWorld().playEffect(victim.getLocation(), 
-                        Effect.valueOf(particleType), 0);
+                    double offsetX = config.getDouble("particles.offset.x", 0.3);
+                    double offsetY = config.getDouble("particles.offset.y", 0.0);
+                    double offsetZ = config.getDouble("particles.offset.z", 0.3);
+                    int count = config.getInt("particles.count", 1);
+                    int interval = config.getInt("particles.interval", 1);
+                    
+                    if (ticks % interval == 0) {
+                        victim.getWorld().playEffect(victim.getLocation(), 
+                            Effect.valueOf(particleType), 0);
+                    }
                 }
                 
                 if (sound && ticks % 5 == 0) {
