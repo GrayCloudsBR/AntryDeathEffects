@@ -48,9 +48,6 @@ public class EffectsGUI implements Listener {
             boolean enabled = playerEffects.contains(effect);
             lore.add(enabled ? ChatColor.GREEN + "Selected" : ChatColor.RED + "Not Selected");
             lore.add(ChatColor.GRAY + "Click to " + (enabled ? "deselect" : "select"));
-            if (effect instanceof FlyingAnimalsEffect) {
-                lore.add(ChatColor.YELLOW + "Right-click for settings");
-            }
             meta.setLore(lore);
             
             item.setItemMeta(meta);
@@ -77,15 +74,11 @@ public class EffectsGUI implements Listener {
 
         if (clickedEffect != null) {
             if (player.hasPermission(clickedEffect.getPermission())) {
-                if (clickedEffect instanceof FlyingAnimalsEffect && event.isRightClick()) {
-                    ((FlyingAnimalsEffect) clickedEffect).openSettingsGUI(player);
-                } else {
-                    plugin.getEffectManager().toggleEffect(player, clickedEffect);
-                    updateGUI(player, event.getInventory());
-                    player.playSound(player.getLocation(), 
-                        plugin.getEffectManager().getPlayerEffects(player).contains(clickedEffect) ? 
-                        org.bukkit.Sound.CLICK : org.bukkit.Sound.NOTE_BASS, 1.0f, 1.0f);
-                }
+                plugin.getEffectManager().toggleEffect(player, clickedEffect);
+                updateGUI(player, event.getInventory());
+                player.playSound(player.getLocation(), 
+                    plugin.getEffectManager().getPlayerEffects(player).contains(clickedEffect) ? 
+                    org.bukkit.Sound.CLICK : org.bukkit.Sound.NOTE_BASS, 1.0f, 1.0f);
             } else {
                 player.sendMessage(ChatColor.RED + "You don't have permission to use this effect!");
                 player.playSound(player.getLocation(), org.bukkit.Sound.NOTE_BASS, 1.0f, 0.5f);

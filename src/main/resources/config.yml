@@ -7,9 +7,10 @@ prefix: "&f&l[&3&lAntryPlugins&7&l] "
 effects:
   flying-animals:
     duration: 40 # Duration in ticks (2 seconds)
+    animal-type: SHEEP # Type of animal to spawn
     firework:
+      enabled: true
       power: 2
-      enabled-by-default: true
     velocity:
       vertical: 0.6
       horizontal: 0.6
