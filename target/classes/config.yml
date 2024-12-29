@@ -1,5 +1,8 @@
 # AntryDeathEffects Configuration
 
+# Add at the top of the file
+prefix: "&f&l[&3&lAntryPlugins&7&l] "
+
 # Default effects settings
 effects:
   flying-animals:
@@ -25,11 +28,11 @@ effects:
     years:
       min: 2000
       max: 2024
-    colors:
-      title: "§c§l"    # Red and bold
-      name: "§e"       # Yellow
-      subtitle: "§7"   # Gray
-      date: "§8"       # Dark gray
+    text:
+      line1: "§c§lR.I.P"
+      line2: "§e%player%"
+      line3: "§7Died Here"
+      line4: "§8%year% - 2025"
 
   lightning:
     strike-count: 1
@@ -40,7 +43,29 @@ effects:
     fire: false
     break-blocks: false
 
+  anvil:
+    height: 5            # Height from which anvil falls
+    sound-volume: 1.0    # Volume of anvil landing sound (0.0 - 1.0)
+    sound-pitch: 1.0     # Pitch of anvil landing sound (0.5 - 2.0)
+    explosion:
+      enabled: true      # Whether anvil creates explosion on impact
+      power: 2.0        # Power of explosion (no block damage)
+    check-interval: 1    # How often to check if anvil landed (in ticks)
+
+  flower-spread:
+    radius: 5
+    spread-delay: 5  # Ticks between each spread
+    duration: 200    # How long before restoring (in ticks)
+    flower-chance: 0.4
+
 # Messages
 messages:
-  no-permission: "&cYou don't have permission to use this!"
-  gui-title: "&5Death Effects" 
+  no-permission: "%prefix%&cYou don't have permission to use this!"
+  gui-title: "&5Death Effects"
+  effect-selected: "%prefix%&aSelected the %effect% effect!"
+  effect-deselected: "%prefix%&cDeselected the %effect% effect!"
+  player-only: "%prefix%&cThis command can only be used by players!"
+  reload-success: "%prefix%&aConfiguration reloaded!"
+
+# Add version for future config updates
+config-version: 1 

@@ -29,3 +29,9 @@ permissions:
   antrydeatheffects.reload:
     description: Allows reloading the plugin configuration
     default: op
+  antrydeatheffects.effect.anvil:
+    description: Allows using the anvil effect
+    default: true
+  antrydeatheffects.effect.flowerspread:
+    description: Allows using the flower spread effect
+    default: true

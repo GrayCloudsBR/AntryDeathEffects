@@ -21,9 +21,11 @@ public class EffectManager {
     private void registerDefaultEffects() {
         availableEffects.add(new LightningEffect());
         availableEffects.add(new ExplosionEffect());
-        availableEffects.add(new FlyingAnimalsEffect(plugin));
+        availableEffects.add(new FlyingAnimalsEffect((AntryDeathEffects)plugin));
         availableEffects.add(new SoulEscapeEffect(plugin));
-        availableEffects.add(new GraveEffect(plugin));
+        availableEffects.add(new GraveEffect((AntryDeathEffects)plugin));
+        availableEffects.add(new AnvilEffect(plugin));
+        availableEffects.add(new FlowerSpreadEffect(plugin));
     }
 
     public void toggleEffect(Player player, DeathEffect effect) {

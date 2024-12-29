@@ -1,6 +1,8 @@
 package dev.antry.antrydeatheffects.effects;
 
 import dev.antry.antrydeatheffects.gui.FlyingAnimalsSettingsGUI;
+import dev.antry.antrydeatheffects.managers.ConfigManager;
+import dev.antry.antrydeatheffects.AntryDeathEffects;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -20,11 +22,13 @@ import java.util.UUID;
 public class FlyingAnimalsEffect extends DeathEffect {
     private final Plugin plugin;
     private final Map<UUID, FlyingAnimalSettings> playerSettings;
+    private final ConfigManager configManager;
 
-    public FlyingAnimalsEffect(Plugin plugin) {
+    public FlyingAnimalsEffect(AntryDeathEffects plugin) {
         super("Flying Animals", Material.MONSTER_EGG, "antrydeatheffects.effect.flyinganimals");
         this.plugin = plugin;
         this.playerSettings = new HashMap<>();
+        this.configManager = plugin.getConfigManager();
     }
 
     @Override
@@ -86,12 +90,29 @@ public class FlyingAnimalsEffect extends DeathEffect {
                 ((org.bukkit.entity.Damageable) animal).setHealth(2048.0);
             }
             
-            Vector velocity = settings.getDirection() == Direction.VERTICAL ?
-                new Vector(0, 0.6, 0) :
-                killer.getLocation().subtract(victim.getLocation()).toVector().normalize().multiply(0.6).setY(0.2);
+            Vector velocity;
+            if (settings.getDirection() == Direction.VERTICAL) {
+                velocity = new Vector(0, configManager.getVerticalVelocity(), 0);
+            } else {
+                // Get direction from killer to victim and normalize it
+                Location killerLoc = killer.getLocation();
+                Location victimLoc = victim.getLocation();
+                
+                // Calculate direction vector
+                double dx = killerLoc.getX() - victimLoc.getX();
+                double dz = killerLoc.getZ() - victimLoc.getZ();
+                
+                // Normalize and apply configured velocity
+                double length = Math.sqrt(dx * dx + dz * dz);
+                dx = (dx / length) * configManager.getHorizontalVelocity();
+                dz = (dz / length) * configManager.getHorizontalVelocity();
+                
+                velocity = new Vector(dx, 0.2, dz); // Small upward component to prevent immediate falling
+            }
             
             animal.setVelocity(velocity);
             
+            // Keep velocity constant
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -103,7 +124,7 @@ public class FlyingAnimalsEffect extends DeathEffect {
                 }
             }.runTaskTimer(plugin, 1L, 1L);
             
-            Bukkit.getScheduler().runTaskLater(plugin, animal::remove, 40L);
+            Bukkit.getScheduler().runTaskLater(plugin, animal::remove, configManager.getFlyingAnimalsDuration());
         }
         
         Bukkit.getLogger().info("[DEBUG] Effect setup complete");

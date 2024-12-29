@@ -2,10 +2,12 @@ package dev.antry.antrydeatheffects.managers;
 
 import dev.antry.antrydeatheffects.AntryDeathEffects;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.ChatColor;
 
 public class ConfigManager {
     private final AntryDeathEffects plugin;
     private FileConfiguration config;
+    private String prefix;
 
     public ConfigManager(AntryDeathEffects plugin) {
         this.plugin = plugin;
@@ -16,6 +18,17 @@ public class ConfigManager {
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
         config = plugin.getConfig();
+        prefix = config.getString("prefix", "&f&l[&3&lAntryPlugins&7&l] ");
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String formatMessage(String path) {
+        String message = config.getString("messages." + path, "");
+        return ChatColor.translateAlternateColorCodes('&', 
+            message.replace("%prefix%", prefix));
     }
 
     // Flying Animals Effect
@@ -75,6 +88,10 @@ public class ConfigManager {
 
     public String getGraveNameColor() {
         return config.getString("effects.grave.colors.name", "§e");
+    }
+
+    public FileConfiguration getConfig() {
+        return config;
     }
 
     // ... Add other getters as needed

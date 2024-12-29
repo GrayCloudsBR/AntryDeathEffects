@@ -2,7 +2,6 @@ package dev.antry.antrydeatheffects.commands;
 
 import dev.antry.antrydeatheffects.AntryDeathEffects;
 import dev.antry.antrydeatheffects.gui.EffectsGUI;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,18 +19,18 @@ public class EffectsCommand implements CommandExecutor {
         if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
             if (sender.hasPermission("antrydeatheffects.reload")) {
                 plugin.getConfigManager().loadConfig();
-                sender.sendMessage(ChatColor.GREEN + "Configuration reloaded!");
+                sender.sendMessage(plugin.getConfigManager().formatMessage("reload-success"));
                 return true;
             }
         }
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+            sender.sendMessage(plugin.getConfigManager().formatMessage("player-only"));
             return true;
         }
         Player player = (Player) sender;
 
         if (!player.hasPermission("antrydeatheffects.use")) {
-            player.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+            player.sendMessage(plugin.getConfigManager().formatMessage("no-permission"));
             return true;
         }
 

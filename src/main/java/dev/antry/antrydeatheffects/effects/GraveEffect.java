@@ -26,6 +26,7 @@ public class GraveEffect extends DeathEffect {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void playEffect(Player killer, Player victim, Location location) {
         // Find ground location
         Location groundLoc = location.clone();
@@ -49,11 +50,18 @@ public class GraveEffect extends DeathEffect {
         int maxYear = configManager.getGraveMaxYear();
         int randomYear = minYear + random.nextInt(maxYear - minYear + 1);
         
-        // Set sign text using config colors
-        sign.setLine(0, configManager.getGraveTitleColor() + "R.I.P");
-        sign.setLine(1, configManager.getGraveNameColor() + victim.getName());
-        sign.setLine(2, "§7Died Here");  // Gray color
-        sign.setLine(3, "§8" + randomYear + " - 2025");  // Dark gray color
+        // Get text from config and replace placeholders
+        String line1 = configManager.getConfig().getString("effects.grave.text.line1", "§c§lR.I.P");
+        String line2 = configManager.getConfig().getString("effects.grave.text.line2", "§e%player%").replace("%player%", victim.getName());
+        String line3 = configManager.getConfig().getString("effects.grave.text.line3", "§7Died Here");
+        String line4 = configManager.getConfig().getString("effects.grave.text.line4", "§8%year% - 2025")
+            .replace("%year%", String.valueOf(randomYear));
+        
+        // Set sign text
+        sign.setLine(0, line1);
+        sign.setLine(1, line2);
+        sign.setLine(2, line3);
+        sign.setLine(3, line4);
         sign.update();
         
         // Add metadata to identify this as a grave sign
