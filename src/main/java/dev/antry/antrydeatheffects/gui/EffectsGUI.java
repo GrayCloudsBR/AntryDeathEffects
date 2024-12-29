@@ -46,8 +46,11 @@ public class EffectsGUI implements Listener {
             
             List<String> lore = new ArrayList<>();
             boolean enabled = playerEffects.contains(effect);
-            lore.add(enabled ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled");
-            lore.add(ChatColor.GRAY + "Click to " + (enabled ? "disable" : "enable"));
+            lore.add(enabled ? ChatColor.GREEN + "Selected" : ChatColor.RED + "Not Selected");
+            lore.add(ChatColor.GRAY + "Click to " + (enabled ? "deselect" : "select"));
+            if (effect instanceof FlyingAnimalsEffect) {
+                lore.add(ChatColor.YELLOW + "Right-click for settings");
+            }
             meta.setLore(lore);
             
             item.setItemMeta(meta);

@@ -69,18 +69,6 @@ public class FlyingAnimalsSettingsGUI implements Listener {
         ));
         firework.setItemMeta(fireworkMeta);
         inv.setItem(15, firework);
-
-        // Amount Setting
-        ItemStack amount = new ItemStack(Material.DIODE);
-        ItemMeta amountMeta = amount.getItemMeta();
-        amountMeta.setDisplayName(ChatColor.GOLD + "Amount: " + settings.getAmount());
-        amountMeta.setLore(Arrays.asList(
-            ChatColor.GRAY + "Current: " + settings.getAmount(),
-            ChatColor.YELLOW + "Left Click: +1",
-            ChatColor.YELLOW + "Right Click: -1"
-        ));
-        amount.setItemMeta(amountMeta);
-        inv.setItem(22, amount);
     }
 
     @EventHandler
@@ -103,13 +91,6 @@ public class FlyingAnimalsSettingsGUI implements Listener {
                 break;
             case 15: // Firework
                 settings.setFireworkEnabled(!settings.isFireworkEnabled());
-                break;
-            case 22: // Amount
-                if (event.isLeftClick()) {
-                    settings.setAmount(settings.getAmount() + 1);
-                } else if (event.isRightClick()) {
-                    settings.setAmount(settings.getAmount() - 1);
-                }
                 break;
         }
 

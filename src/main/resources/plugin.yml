@@ -20,3 +20,9 @@ permissions:
   antrydeatheffects.effect.flyinganimals:
     description: Allows using the flying animals effect
     default: true
+  antrydeatheffects.effect.soulescape:
+    description: Allows using the soul escape effect
+    default: true
+  antrydeatheffects.effect.grave:
+    description: Allows using the grave effect
+    default: true

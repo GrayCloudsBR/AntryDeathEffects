@@ -7,7 +7,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.bukkit.FireworkEffect;
+import org.bukkit.entity.Firework;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,51 +31,82 @@ public class FlyingAnimalsEffect extends DeathEffect {
     public void playEffect(Player killer, Player victim, Location location) {
         FlyingAnimalSettings settings = playerSettings.getOrDefault(killer.getUniqueId(), new FlyingAnimalSettings());
         
-        // Spawn animals in a circle
-        for (int i = 0; i < settings.getAmount(); i++) {
-            double angle = (2 * Math.PI * i) / settings.getAmount();
-            Location spawnLoc = location.clone().add(Math.cos(angle) * 1, 0, Math.sin(angle) * 1);
+        Bukkit.getLogger().info("[DEBUG] Starting FlyingAnimalsEffect");
+        
+        if (settings.isFireworkEnabled()) {
+            // Create and setup firework first
+            Firework fw = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+            FireworkMeta fwm = fw.getFireworkMeta();
             
-            Entity animal = location.getWorld().spawnEntity(spawnLoc, settings.getEntityType());
+            Bukkit.getLogger().info("[DEBUG] Firework spawned at: " + fw.getLocation());
+            
+            // Random firework effect
+            FireworkEffect effect = FireworkEffect.builder()
+                .withColor(Color.fromRGB(
+                    (int) (Math.random() * 255),
+                    (int) (Math.random() * 255),
+                    (int) (Math.random() * 255)))
+                .with(FireworkEffect.Type.BALL_LARGE)
+                .withTrail()
+                .build();
+            
+            fwm.addEffect(effect);
+            fwm.setPower(2); // Make it fly higher
+            fw.setFireworkMeta(fwm);
+            
+            // Spawn animal and make it ride the firework
+            Entity animal = location.getWorld().spawnEntity(location, settings.getEntityType());
             animal.setMetadata("FlyingAnimal", new FixedMetadataValue(plugin, true));
             
-            // Make the animal invulnerable
             if (animal instanceof org.bukkit.entity.Damageable) {
                 ((org.bukkit.entity.Damageable) animal).setMaxHealth(2048.0);
                 ((org.bukkit.entity.Damageable) animal).setHealth(2048.0);
             }
             
-            // Set consistent velocity
-            Vector velocity;
-            switch (settings.getDirection()) {
-                case VERTICAL:
-                    velocity = new Vector(0, 1.0, 0);
-                    break;
-                case HORIZONTAL:
-                    double x = Math.cos(angle);
-                    double z = Math.sin(angle);
-                    // Normalize the vector and set a consistent speed
-                    double length = Math.sqrt(x * x + z * z);
-                    velocity = new Vector(x/length, 0.2, z/length).multiply(0.8);
-                    break;
-                default:
-                    velocity = new Vector(0, 1, 0);
+            // Make animal ride firework immediately
+            boolean success = fw.setPassenger(animal);
+            Bukkit.getLogger().info("[DEBUG] Attempt to set animal as passenger: " + success);
+            Bukkit.getLogger().info("[DEBUG] Firework passenger: " + fw.getPassenger());
+            
+            // Remove animal when firework explodes
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (animal.isValid()) {
+                    animal.remove();
+                    Bukkit.getLogger().info("[DEBUG] Removed animal after firework");
+                }
+            }, 40L);
+            
+        } else {
+            // Original flying animal behavior without firework
+            Entity animal = location.getWorld().spawnEntity(location, settings.getEntityType());
+            animal.setMetadata("FlyingAnimal", new FixedMetadataValue(plugin, true));
+            
+            if (animal instanceof org.bukkit.entity.Damageable) {
+                ((org.bukkit.entity.Damageable) animal).setMaxHealth(2048.0);
+                ((org.bukkit.entity.Damageable) animal).setHealth(2048.0);
             }
             
+            Vector velocity = settings.getDirection() == Direction.VERTICAL ?
+                new Vector(0, 0.6, 0) :
+                killer.getLocation().subtract(victim.getLocation()).toVector().normalize().multiply(0.6).setY(0.2);
+            
             animal.setVelocity(velocity);
-
-            // Schedule removal and optional firework
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (settings.isFireworkEnabled()) {
-                    spawnFirework(animal.getLocation());
+            
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!animal.isValid()) {
+                        this.cancel();
+                        return;
+                    }
+                    animal.setVelocity(velocity);
                 }
-                animal.remove();
-            }, 60L); // 3 seconds
+            }.runTaskTimer(plugin, 1L, 1L);
+            
+            Bukkit.getScheduler().runTaskLater(plugin, animal::remove, 40L);
         }
-    }
-
-    private void spawnFirework(Location location) {
-        location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+        
+        Bukkit.getLogger().info("[DEBUG] Effect setup complete");
     }
 
     public void openSettingsGUI(Player player) {
@@ -90,7 +125,6 @@ public class FlyingAnimalsEffect extends DeathEffect {
         private EntityType entityType = EntityType.PIG;
         private Direction direction = Direction.VERTICAL;
         private boolean fireworkEnabled = true;
-        private int amount = 5;
 
         public EntityType getEntityType() { return entityType; }
         public void setEntityType(EntityType entityType) { this.entityType = entityType; }
@@ -98,8 +132,6 @@ public class FlyingAnimalsEffect extends DeathEffect {
         public void setDirection(Direction direction) { this.direction = direction; }
         public boolean isFireworkEnabled() { return fireworkEnabled; }
         public void setFireworkEnabled(boolean fireworkEnabled) { this.fireworkEnabled = fireworkEnabled; }
-        public int getAmount() { return amount; }
-        public void setAmount(int amount) { this.amount = Math.min(Math.max(amount, 1), 10); }
     }
 
     public enum Direction {

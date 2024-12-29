@@ -9,7 +9,7 @@ import java.util.*;
 public class EffectManager {
     private final AntryDeathEffects plugin;
     private final List<DeathEffect> availableEffects;
-    private final Map<UUID, Set<DeathEffect>> playerEffects;
+    private final Map<UUID, DeathEffect> playerEffects;
 
     public EffectManager(AntryDeathEffects plugin) {
         this.plugin = plugin;
@@ -22,22 +22,27 @@ public class EffectManager {
         availableEffects.add(new LightningEffect());
         availableEffects.add(new ExplosionEffect());
         availableEffects.add(new FlyingAnimalsEffect(plugin));
+        availableEffects.add(new SoulEscapeEffect(plugin));
+        availableEffects.add(new GraveEffect(plugin));
     }
 
     public void toggleEffect(Player player, DeathEffect effect) {
         UUID uuid = player.getUniqueId();
-        playerEffects.putIfAbsent(uuid, new HashSet<>());
-        Set<DeathEffect> effects = playerEffects.get(uuid);
         
-        if (effects.contains(effect)) {
-            effects.remove(effect);
+        if (playerEffects.containsKey(uuid) && playerEffects.get(uuid).equals(effect)) {
+            playerEffects.remove(uuid);
         } else {
-            effects.add(effect);
+            playerEffects.put(uuid, effect);
         }
     }
 
     public Set<DeathEffect> getPlayerEffects(Player player) {
-        return playerEffects.getOrDefault(player.getUniqueId(), new HashSet<>());
+        Set<DeathEffect> effects = new HashSet<>();
+        DeathEffect effect = playerEffects.get(player.getUniqueId());
+        if (effect != null) {
+            effects.add(effect);
+        }
+        return effects;
     }
 
     public List<DeathEffect> getAvailableEffects() {
