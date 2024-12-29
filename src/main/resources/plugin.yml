@@ -1,0 +1,3 @@
+name: AntryDeathEffects
+version: '${project.version}'
+main: dev.antry.antrydeatheffects.AntryDeathEffects
