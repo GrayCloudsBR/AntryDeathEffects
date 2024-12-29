@@ -26,6 +26,8 @@ public class EffectManager {
         availableEffects.add(new GraveEffect((AntryDeathEffects)plugin));
         availableEffects.add(new AnvilEffect(plugin));
         availableEffects.add(new FlowerSpreadEffect(plugin));
+        availableEffects.add(new FireworkEffect(plugin));
+        availableEffects.add(new LaunchEffect(plugin));
     }
 
     public void toggleEffect(Player player, DeathEffect effect) {

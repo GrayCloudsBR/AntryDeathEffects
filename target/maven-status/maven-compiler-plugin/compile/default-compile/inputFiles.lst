@@ -3,8 +3,10 @@ C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeath
 C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\listeners\DeathListener.java
 C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\commands\EffectsCommand.java
 C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\gui\EffectsGUI.java
+C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\effects\LaunchEffect.java
 C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\listeners\FlowerDropListener.java
 C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\effects\SoulEscapeEffect.java
+C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\effects\FireworkEffect.java
 C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\managers\ConfigManager.java
 C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\listeners\GraveProtectionListener.java
 C:\Users\grayc\IdeaProjects\AntryDeathEffects\src\main\java\dev\antry\antrydeatheffects\managers\EffectManager.java

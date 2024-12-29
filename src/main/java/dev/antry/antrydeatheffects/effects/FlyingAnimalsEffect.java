@@ -81,7 +81,7 @@ public class FlyingAnimalsEffect extends DeathEffect {
             }, 40L);
             
         } else {
-            // Original flying animal behavior without firework
+            // Create initial animal
             Entity animal = location.getWorld().spawnEntity(location, settings.getEntityType());
             animal.setMetadata("FlyingAnimal", new FixedMetadataValue(plugin, true));
             
@@ -90,41 +90,34 @@ public class FlyingAnimalsEffect extends DeathEffect {
                 ((org.bukkit.entity.Damageable) animal).setHealth(2048.0);
             }
             
-            Vector velocity;
-            if (settings.getDirection() == Direction.VERTICAL) {
-                velocity = new Vector(0, configManager.getVerticalVelocity(), 0);
-            } else {
-                // Get direction from killer to victim and normalize it
-                Location killerLoc = killer.getLocation();
-                Location victimLoc = victim.getLocation();
-                
-                // Calculate direction vector
-                double dx = killerLoc.getX() - victimLoc.getX();
-                double dz = killerLoc.getZ() - victimLoc.getZ();
-                
-                // Normalize and apply configured velocity
-                double length = Math.sqrt(dx * dx + dz * dz);
-                dx = (dx / length) * configManager.getHorizontalVelocity();
-                dz = (dz / length) * configManager.getHorizontalVelocity();
-                
-                velocity = new Vector(dx, 0.2, dz); // Small upward component to prevent immediate falling
-            }
+            // Calculate velocities
+            double verticalVel = configManager.getConfig().getDouble("effects.flying-animals.velocity.vertical", 0.6);
+            double horizontalVel = configManager.getConfig().getDouble("effects.flying-animals.velocity.horizontal", 0.6);
+            double upwardOffset = configManager.getConfig().getDouble("effects.flying-animals.velocity.upward-offset", 0.2);
             
-            animal.setVelocity(velocity);
-            
-            // Keep velocity constant
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!animal.isValid()) {
-                        this.cancel();
-                        return;
+            // Spawn in circle
+            for (int i = 0; i < 360; i += 45) {
+                double angle = Math.toRadians(i);
+                double dx = Math.cos(angle) * horizontalVel;
+                double dz = Math.sin(angle) * horizontalVel;
+
+                Vector velocity = new Vector(dx, verticalVel + upwardOffset, dz);
+                animal.setVelocity(velocity);
+
+                // Keep velocity constant
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!animal.isValid()) {
+                            this.cancel();
+                            return;
+                        }
+                        animal.setVelocity(velocity);
                     }
-                    animal.setVelocity(velocity);
-                }
-            }.runTaskTimer(plugin, 1L, 1L);
-            
-            Bukkit.getScheduler().runTaskLater(plugin, animal::remove, configManager.getFlyingAnimalsDuration());
+                }.runTaskTimer(plugin, 1L, 1L);
+                
+                Bukkit.getScheduler().runTaskLater(plugin, animal::remove, configManager.getFlyingAnimalsDuration());
+            }
         }
         
         Bukkit.getLogger().info("[DEBUG] Effect setup complete");

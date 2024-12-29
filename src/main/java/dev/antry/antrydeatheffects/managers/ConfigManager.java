@@ -94,5 +94,9 @@ public class ConfigManager {
         return config;
     }
 
+    public double getDouble(String path, double def) {
+        return config.getDouble(path, def);
+    }
+
     // ... Add other getters as needed
 } 

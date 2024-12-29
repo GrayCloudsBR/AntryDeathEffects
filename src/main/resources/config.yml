@@ -84,6 +84,24 @@ effects:
         volume: 0.5
         pitch: 1.0
 
+  firework:
+    amount: 1          # Number of fireworks to spawn
+    power: 2           # How high the firework goes (0-4)
+    trail: true        # Whether firework has trail
+    flicker: true      # Whether firework has flicker effect
+
+  launch:
+    velocity: 3.0      # How high the player is launched
+    duration: 60       # How long effects last (in ticks)
+    particles:
+      enabled: true
+      type: CLOUD      # Particle effect type
+    sound:
+      enabled: true
+      type: ENDERDRAGON_WINGS
+      volume: 1.0
+      pitch: 1.0
+
 # Messages
 messages:
   no-permission: "%prefix%&cYou don't have permission to use this!"
