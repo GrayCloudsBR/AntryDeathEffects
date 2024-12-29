@@ -14,3 +14,9 @@ permissions:
   antrydeatheffects.effect.lightning:
     description: Allows using the lightning effect
     default: true
+  antrydeatheffects.effect.explosion:
+    description: Allows using the explosion effect
+    default: true
+  antrydeatheffects.effect.flyinganimals:
+    description: Allows using the flying animals effect
+    default: true

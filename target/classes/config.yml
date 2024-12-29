@@ -1,0 +1,12 @@
+# AntryDeathEffects Configuration
+
+# Default effects settings
+effects:
+  lightning:
+    enabled: true
+    permission: antrydeatheffects.effect.lightning
+
+# Messages
+messages:
+  no-permission: "&cYou don't have permission to use this!"
+  gui-title: "&5Death Effects" 

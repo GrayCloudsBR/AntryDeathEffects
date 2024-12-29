@@ -7,10 +7,12 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class EffectManager {
+    private final AntryDeathEffects plugin;
     private final List<DeathEffect> availableEffects;
     private final Map<UUID, Set<DeathEffect>> playerEffects;
 
     public EffectManager(AntryDeathEffects plugin) {
+        this.plugin = plugin;
         this.availableEffects = new ArrayList<>();
         this.playerEffects = new HashMap<>();
         registerDefaultEffects();
@@ -18,7 +20,8 @@ public class EffectManager {
 
     private void registerDefaultEffects() {
         availableEffects.add(new LightningEffect());
-        // Add more effects here
+        availableEffects.add(new ExplosionEffect());
+        availableEffects.add(new FlyingAnimalsEffect(plugin));
     }
 
     public void toggleEffect(Player player, DeathEffect effect) {
