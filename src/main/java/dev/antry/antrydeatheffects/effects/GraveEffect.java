@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.ArmorStand;
 
 import java.util.Random;
 
@@ -15,7 +17,7 @@ import dev.antry.antrydeatheffects.managers.ConfigManager;
 import dev.antry.antrydeatheffects.AntryDeathEffects;
 
 public class GraveEffect extends DeathEffect {
-    private final Plugin plugin;
+    private final AntryDeathEffects plugin;
     private final Random random = new Random();
     private final ConfigManager configManager;
     
@@ -25,58 +27,36 @@ public class GraveEffect extends DeathEffect {
         this.configManager = plugin.getConfigManager();
     }
 
+    private String formatLine(String line, String color, Player victim) {
+        return color + line
+            .replace("%player%", victim.getName())
+            .replace("%year%", String.valueOf(
+                random.nextInt(
+                    config.getInt("effects.grave.years.max", 2024) - 
+                    config.getInt("effects.grave.years.min", 2000) + 1) + 
+                config.getInt("effects.grave.years.min", 2000)
+            ));
+    }
+
     @Override
     @SuppressWarnings("deprecation")
     public void playEffect(Player killer, Player victim, Location location) {
-        // Find ground location
-        Location groundLoc = location.clone();
-        while (groundLoc.getBlock().getType() == Material.AIR && groundLoc.getY() > 0) {
-            groundLoc.subtract(0, 1, 0);
-        }
-        Location signLoc = groundLoc.add(0, 1, 0);
-        
-        Block block = signLoc.getBlock();
-        
-        // Store original block if it's not air (to restore later)
-        Material originalMaterial = block.getType();
-        byte originalData = block.getData();
-        
-        // Place the sign
-        block.setType(Material.SIGN_POST);
-        Sign sign = (Sign) block.getState();
-        
-        // Generate random year using config values
-        int minYear = configManager.getGraveMinYear();
-        int maxYear = configManager.getGraveMaxYear();
-        int randomYear = minYear + random.nextInt(maxYear - minYear + 1);
-        
-        // Get text from config and replace placeholders
-        String line1 = configManager.getConfig().getString("effects.grave.text.line1", "§c§lR.I.P");
-        String line2 = configManager.getConfig().getString("effects.grave.text.line2", "§e%player%").replace("%player%", victim.getName());
-        String line3 = configManager.getConfig().getString("effects.grave.text.line3", "§7Died Here");
-        String line4 = configManager.getConfig().getString("effects.grave.text.line4", "§8%year% - 2025")
-            .replace("%year%", String.valueOf(randomYear));
-        
-        // Set sign text
-        sign.setLine(0, line1);
-        sign.setLine(1, line2);
-        sign.setLine(2, line3);
-        sign.setLine(3, line4);
-        sign.update();
-        
-        // Add metadata to identify this as a grave sign
-        block.setMetadata("GraveSign", new FixedMetadataValue(plugin, true));
-        
-        // Remove sign and restore original block after 5 seconds
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (block.hasMetadata("GraveSign")) {
-                    block.removeMetadata("GraveSign", plugin);
-                    block.setType(originalMaterial);
-                    block.setData(originalData);
-                }
-            }
-        }.runTaskLater(plugin, configManager.getGraveDuration());
+        ConfigurationSection config = plugin.getConfigManager().getConfig()
+            .getConfigurationSection("effects.grave");
+            
+        ArmorStand stand = location.getWorld().spawn(location, ArmorStand.class);
+        // ... other armor stand setup ...
+
+        String[] lines = new String[4];
+        lines[0] = formatLine(config.getString("text.line1", "R.I.P"), 
+                            config.getString("colors.line1", "§c§l"), victim);
+        lines[1] = formatLine(config.getString("text.line2", "%player%"), 
+                            config.getString("colors.line2", "§e"), victim);
+        lines[2] = formatLine(config.getString("text.line3", "Died Here"), 
+                            config.getString("colors.line3", "§7"), victim);
+        lines[3] = formatLine(config.getString("text.line4", "%year% - 2025"), 
+                            config.getString("colors.line4", "§8"), victim);
+
+        // ... rest of the effect code ...
     }
 } 

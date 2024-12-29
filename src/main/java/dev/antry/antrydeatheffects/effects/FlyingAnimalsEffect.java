@@ -17,10 +17,36 @@ import java.util.Random;
 public class FlyingAnimalsEffect extends DeathEffect {
     private final AntryDeathEffects plugin;
     private final Random random = new Random();
+    private int listCounter = 0;
 
     public FlyingAnimalsEffect(AntryDeathEffects plugin) {
         super("Flying Animals", Material.MONSTER_EGG, "antrydeatheffects.effect.flyinganimals");
         this.plugin = plugin;
+    }
+
+    private EntityType getAnimalType(ConfigurationSection config) {
+        String mode = config.getString("animals.mode", "SINGLE").toUpperCase();
+        
+        switch (mode) {
+            case "RANDOM":
+                List<String> animals = config.getStringList("animals.list");
+                if (animals.isEmpty()) {
+                    return EntityType.PIG; // Default if list is empty
+                }
+                return EntityType.valueOf(animals.get(random.nextInt(animals.size())));
+                
+            case "LIST":
+                // Cycle through the list using a static counter
+                List<String> animalList = config.getStringList("animals.list");
+                if (animalList.isEmpty()) {
+                    return EntityType.PIG; // Default if list is empty
+                }
+                return EntityType.valueOf(animalList.get(listCounter++ % animalList.size()));
+                
+            case "SINGLE":
+            default:
+                return EntityType.valueOf(config.getString("animals.default", "PIG"));
+        }
     }
 
     @Override
@@ -30,7 +56,7 @@ public class FlyingAnimalsEffect extends DeathEffect {
             
         // Get configuration values
         boolean useFirework = config.getBoolean("firework.enabled", true);
-        EntityType animalType = EntityType.valueOf(config.getString("animal-type", "SHEEP"));
+        EntityType animalType = getAnimalType(config);
         
         if (useFirework) {
             // Create and setup firework

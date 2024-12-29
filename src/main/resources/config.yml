@@ -7,7 +7,15 @@ prefix: "&f&l[&3&lAntryPlugins&7&l] "
 effects:
   flying-animals:
     duration: 40                # Duration in ticks (2 seconds)
-    animal-type: SHEEP         # Type of animal to spawn (SHEEP, COW, PIG, etc.)
+    animals:
+      mode: "SINGLE"           # SINGLE, RANDOM, or LIST
+      default: "PIG"           # Default animal type when mode is SINGLE
+      list:                    # List of animals to use when mode is LIST or RANDOM
+        - "PIG"
+        - "COW"
+        - "SHEEP"
+        - "CHICKEN"
+        - "RABBIT"
     animal-health: 2048.0      # Health of spawned animals
     circle-points: 8           # Number of points in the circle (45° intervals)
     firework:
@@ -44,10 +52,15 @@ effects:
       min: 2000
       max: 2024
     text:
-      line1: "§c§lR.I.P"
-      line2: "§e%player%"
-      line3: "§7Died Here"
-      line4: "§8%year% - 2025"
+      line1: "R.I.P"
+      line2: "%player%"
+      line3: "Died Here"
+      line4: "%year% - 2025"
+    colors:
+      line1: "§c§l"
+      line2: "§e"
+      line3: "§7"
+      line4: "§8"
 
   lightning:
     strike-count: 1
