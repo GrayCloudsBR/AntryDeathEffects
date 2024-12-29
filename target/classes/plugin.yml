@@ -1,5 +1,5 @@
 name: AntryDeathEffects
-version: '${project.version}'
+version: 'v1.0'
 main: dev.antry.antrydeatheffects.AntryDeathEffects
 api-version: '1.20'
 commands:

@@ -17,6 +17,13 @@ public class EffectsCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
+            if (sender.hasPermission("antrydeatheffects.reload")) {
+                plugin.getConfigManager().loadConfig();
+                sender.sendMessage(ChatColor.GREEN + "Configuration reloaded!");
+                return true;
+            }
+        }
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
             return true;
