@@ -28,7 +28,7 @@ public final class AntryDeathEffects extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EffectsGUI(this), this);
         getServer().getPluginManager().registerEvents(new AnimalProtectionListener(), this);
         getServer().getPluginManager().registerEvents(new GraveProtectionListener(), this);
-        getServer().getPluginManager().registerEvents(new FlowerDropListener(), this);
+        getServer().getPluginManager().registerEvents(new FlowerDropListener(this), this);
         
         // Register commands
         getCommand("deatheffects").setExecutor(new EffectsCommand(this));
