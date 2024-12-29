@@ -4,7 +4,6 @@ import dev.antry.antrydeatheffects.gui.FlyingAnimalsSettingsGUI;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -36,17 +35,27 @@ public class FlyingAnimalsEffect extends DeathEffect {
             Entity animal = location.getWorld().spawnEntity(spawnLoc, settings.getEntityType());
             animal.setMetadata("FlyingAnimal", new FixedMetadataValue(plugin, true));
             
-            // Calculate velocity based on direction setting
+            // Make the animal invulnerable
+            if (animal instanceof org.bukkit.entity.Damageable) {
+                ((org.bukkit.entity.Damageable) animal).setMaxHealth(2048.0);
+                ((org.bukkit.entity.Damageable) animal).setHealth(2048.0);
+            }
+            
+            // Set consistent velocity
             Vector velocity;
             switch (settings.getDirection()) {
                 case VERTICAL:
-                    velocity = new Vector(Math.cos(angle) * 0.5, 1.5, Math.sin(angle) * 0.5);
+                    velocity = new Vector(0, 1.0, 0);
                     break;
                 case HORIZONTAL:
-                    velocity = new Vector(Math.cos(angle) * 1.5, 0.5, Math.sin(angle) * 1.5);
+                    double x = Math.cos(angle);
+                    double z = Math.sin(angle);
+                    // Normalize the vector and set a consistent speed
+                    double length = Math.sqrt(x * x + z * z);
+                    velocity = new Vector(x/length, 0.2, z/length).multiply(0.8);
                     break;
                 default:
-                    velocity = new Vector(Math.cos(angle), 1, Math.sin(angle));
+                    velocity = new Vector(0, 1, 0);
             }
             
             animal.setVelocity(velocity);
