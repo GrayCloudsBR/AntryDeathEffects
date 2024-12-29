@@ -27,7 +27,7 @@ public class GraveEffect extends DeathEffect {
         this.configManager = plugin.getConfigManager();
     }
 
-    private String formatLine(String line, String color, Player victim) {
+    private String formatLine(String line, String color, Player victim, ConfigurationSection config) {
         return color + line
             .replace("%player%", victim.getName())
             .replace("%year%", String.valueOf(
@@ -49,13 +49,13 @@ public class GraveEffect extends DeathEffect {
 
         String[] lines = new String[4];
         lines[0] = formatLine(config.getString("text.line1", "R.I.P"), 
-                            config.getString("colors.line1", "§c§l"), victim);
+                            config.getString("colors.line1", "§c§l"), victim, config);
         lines[1] = formatLine(config.getString("text.line2", "%player%"), 
-                            config.getString("colors.line2", "§e"), victim);
+                            config.getString("colors.line2", "§e"), victim, config);
         lines[2] = formatLine(config.getString("text.line3", "Died Here"), 
-                            config.getString("colors.line3", "§7"), victim);
+                            config.getString("colors.line3", "§7"), victim, config);
         lines[3] = formatLine(config.getString("text.line4", "%year% - 2025"), 
-                            config.getString("colors.line4", "§8"), victim);
+                            config.getString("colors.line4", "§8"), victim, config);
 
         // ... rest of the effect code ...
     }
