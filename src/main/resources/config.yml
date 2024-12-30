@@ -51,16 +51,16 @@ effects:
     years:
       min: 2000
       max: 2024
-    text:
-      line1: "R.I.P"
-      line2: "%player%"
-      line3: "Died Here"
-      line4: "%year% - 2025"
+    lines:
+      line1: "&c&lR.I.P"          # First line of text on the grave (Red, bold)
+      line2: "&e%player%"         # Second line - %player% gets replaced with victim's name (Yellow)
+      line3: "&7Died Here"        # Third line of text (Gray) 
+      line4: "&8%year% - 2025"    # Fourth line with year placeholder (Dark gray)
     colors:
-      line1: "§c§l"
-      line2: "§e"
-      line3: "§7"
-      line4: "§8"
+      line1: "&c&l"
+      line2: "&e"
+      line3: "&7"
+      line4: "&8"
 
   lightning:
     strike-count: 1

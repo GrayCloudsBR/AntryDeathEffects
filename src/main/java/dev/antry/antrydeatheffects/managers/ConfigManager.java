@@ -28,7 +28,7 @@ public class ConfigManager {
     public String formatMessage(String path) {
         String message = config.getString("messages." + path, "");
         return ChatColor.translateAlternateColorCodes('&', 
-            message.replace("%prefix%", prefix));
+            message.replace("%prefix%", ChatColor.translateAlternateColorCodes('&', prefix)));
     }
 
     // Flying Animals Effect
@@ -99,4 +99,8 @@ public class ConfigManager {
     }
 
     // ... Add other getters as needed
+
+    public String colorize(String text) {
+        return ChatColor.translateAlternateColorCodes('&', text);
+    }
 } 

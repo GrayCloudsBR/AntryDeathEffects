@@ -2,7 +2,6 @@ package dev.antry.antrydeatheffects.gui;
 
 import dev.antry.antrydeatheffects.AntryDeathEffects;
 import dev.antry.antrydeatheffects.effects.DeathEffect;
-import dev.antry.antrydeatheffects.effects.FlyingAnimalsEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -21,11 +20,12 @@ import java.util.Set;
 
 public class EffectsGUI implements Listener {
     private final AntryDeathEffects plugin;
-    private final String guiTitle = ChatColor.DARK_PURPLE + "Death Effects";
+    private final String guiTitle;
     private final HashMap<Player, Inventory> openInventories = new HashMap<>();
 
     public EffectsGUI(AntryDeathEffects plugin) {
         this.plugin = plugin;
+        this.guiTitle = plugin.getConfigManager().colorize("&5Death Effects");
     }
 
     public void openGUI(Player player) {
@@ -42,12 +42,12 @@ public class EffectsGUI implements Listener {
         for (DeathEffect effect : plugin.getEffectManager().getAvailableEffects()) {
             ItemStack item = new ItemStack(effect.getIcon());
             ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(ChatColor.GOLD + effect.getName());
+            meta.setDisplayName(plugin.getConfigManager().colorize("&6" + effect.getName()));
             
             List<String> lore = new ArrayList<>();
             boolean enabled = playerEffects.contains(effect);
-            lore.add(enabled ? ChatColor.GREEN + "Selected" : ChatColor.RED + "Not Selected");
-            lore.add(ChatColor.GRAY + "Click to " + (enabled ? "deselect" : "select"));
+            lore.add(plugin.getConfigManager().colorize(enabled ? "&aSelected" : "&cNot Selected"));
+            lore.add(plugin.getConfigManager().colorize("&7Click to " + (enabled ? "deselect" : "select")));
             meta.setLore(lore);
             
             item.setItemMeta(meta);
