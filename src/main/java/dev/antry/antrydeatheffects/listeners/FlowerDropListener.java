@@ -7,7 +7,6 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.block.Block;
 import org.bukkit.Material;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 public class FlowerDropListener implements Listener {
